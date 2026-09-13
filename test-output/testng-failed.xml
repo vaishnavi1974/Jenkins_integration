@@ -3,11 +3,11 @@
 <suite name="Failed suite [Suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="chromeTest(failed)">
     <parameter name="br" value="chrome"/>
-    <parameter name="os" value="windows"/>
+    <parameter name="os" value="linux"/>
     <classes>
       <class name="Orange_HRM.Login">
         <methods>
-          <include name="login"/>
+          <include name="login" invocation-numbers="1"/>
           <include name="browser_teardown"/>
           <include name="driver_initialization"/>
         </methods>
@@ -16,11 +16,11 @@
   </test> <!-- chromeTest(failed) -->
   <test thread-count="5" name="firefoxTest(failed)">
     <parameter name="br" value="firefox"/>
-    <parameter name="os" value="windows"/>
+    <parameter name="os" value="linux"/>
     <classes>
       <class name="Orange_HRM.Login">
         <methods>
-          <include name="login"/>
+          <include name="login" invocation-numbers="1"/>
           <include name="browser_teardown"/>
           <include name="driver_initialization"/>
         </methods>

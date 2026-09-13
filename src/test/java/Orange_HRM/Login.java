@@ -1,8 +1,11 @@
 package Orange_HRM;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Properties;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
@@ -25,9 +28,26 @@ public class Login {
 	@FindBy (xpath="//input[@placeholder='Password']") WebElement Password;
 	@FindBy(xpath="//button[normalize-space()='Login']") WebElement Submit;
 	
+	/**
+	 * Loads Selenium Grid URL from config.properties
+	 */
+	private String getGridURL() throws IOException {
+		Properties props = new Properties();
+		InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties");
+		if (input == null) {
+			System.out.println("config.properties not found, using default URL");
+			return "http://localhost:4444/wd/hub";
+		}
+		props.load(input);
+		String env = System.getProperty("selenium.grid.env", props.getProperty("selenium.grid.env", "docker"));
+		String gridUrl = props.getProperty("selenium.grid.url." + env, "http://localhost:4444/wd/hub");
+		System.out.println("Connecting to Selenium Grid at: " + gridUrl);
+		return gridUrl;
+	}
+	
 	@BeforeMethod
 	@Parameters({"br","os"})
-	public void driver_initialization(String br,String os) throws MalformedURLException
+	public void driver_initialization(String br,String os) throws MalformedURLException, IOException
 	{
 		
 		switch(os)
@@ -45,7 +65,7 @@ public class Login {
 		default:System.out.println("Invalid driver");return;
 		}
 		
-		driver=new RemoteWebDriver(new URL("http://192.168.29.4:4444/wd/hub"),dc);
+		driver=new RemoteWebDriver(new URL(getGridURL()),dc);
 		PageFactory.initElements(driver, this);
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 		driver.manage().window().maximize();
